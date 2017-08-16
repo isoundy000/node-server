@@ -1,0 +1,23 @@
+{
+  "name": "angular-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "*",
+    "@types/express": "*",
+    "@types/morgan": "*",
+    "@types/node": "*",
+    "body-parser": "*",
+    "express": "*",
+    "morgan": "*",
+    "multer": "*",
+    "ws": "^3.1.0"
+  }
+}

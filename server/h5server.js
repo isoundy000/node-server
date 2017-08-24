@@ -67,13 +67,24 @@ function uploadFile(files, req, postData) {
             delete files.key;
             return;
         }
-        content += '\r\n----' + boundaryKey + '\r\n' +
+        //第一个文件合并参数提交，后续文件提交自身参数
+        if (key == 0) {
+            content += '\r\n----' + boundaryKey + '\r\n' +
+                'Content-Type: application/octet-stream\r\n' +
+                'Content-Disposition: form-data; name="' + files[key].fieldname + '"; ' +
+                'filename="' + files[key].filename + '"; \r\n' +
+                'Content-Transfer-Encoding: binary\r\n\r\n';
+            files[key].contentBinary = new Buffer(content, 'utf-8');
+            filesLength += files[key].contentBinary.length + fs.statSync(files[key].path).size;
+        } else {
+            content = '\r\n----' + boundaryKey + '\r\n' +
             'Content-Type: application/octet-stream\r\n' +
             'Content-Disposition: form-data; name="' + files[key].fieldname + '"; ' +
             'filename="' + files[key].filename + '"; \r\n' +
             'Content-Transfer-Encoding: binary\r\n\r\n';
         files[key].contentBinary = new Buffer(content, 'utf-8');
         filesLength += files[key].contentBinary.length + fs.statSync(files[key].path).size;
+        }
     });
 
     req.setHeader('Content-Type', 'multipart/form-data; boundary=--' + boundaryKey);
@@ -83,20 +94,23 @@ function uploadFile(files, req, postData) {
     var allFiles = Object.keys(files);
     var fileNum = allFiles.length;
     var uploadedCount = 0;
-    allFiles.forEach(function (key) {
-        req.write(files[key].contentBinary);
-        var fileStream = fs.createReadStream(files[key].path, { bufferSize: 4 * 1024 });
+    var doUpload = function () {
+        req.write(files[uploadedCount].contentBinary);
+        var fileStream = fs.createReadStream(files[uploadedCount].path, { bufferSize: 4 * 1024 });
         fileStream.on('end', function () {
             // 上传成功一个文件之后，把临时文件删了
-            fs.unlink(files[key].path);
+            fs.unlink(files[uploadedCount].path);
             uploadedCount++;
             if (uploadedCount == fileNum) {
                 // 如果已经是最后一个文件，那就正常结束
                 req.end(endData);
+            } else {
+                doUpload();
             }
         });
         fileStream.pipe(req, { end: false });
-    });
+    }
+    doUpload();
 }
 
 
@@ -192,10 +206,10 @@ app.post('/serverH5', function (req, res) {
         }
     };
 
-    // options.path = 'http://' + options.host + ':' + options.port + options.path;
-    // options.headers.host = options.host;
-    // options.host = '127.0.0.1';
-    // options.port = 8888;
+    options.path = 'http://' + options.host + ':' + options.port + options.path;
+    options.headers.host = options.host;
+    options.host = '127.0.0.1';
+    options.port = 8888;
 
     var http = require('http');
     var reqHppts = http.request(options, function (serverFeedback) {

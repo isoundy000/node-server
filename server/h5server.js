@@ -206,10 +206,10 @@ app.post('/serverH5', function (req, res) {
         }
     };
 
-    options.path = 'http://' + options.host + ':' + options.port + options.path;
-    options.headers.host = options.host;
-    options.host = '127.0.0.1';
-    options.port = 8888;
+    // options.path = 'http://' + options.host + ':' + options.port + options.path;
+    // options.headers.host = options.host;
+    // options.host = '127.0.0.1';
+    // options.port = 8888;
 
     var http = require('http');
     var reqHppts = http.request(options, function (serverFeedback) {

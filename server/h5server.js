@@ -285,7 +285,8 @@ app.post('/serverDianDian', function(req, res) {
             "Content-Length": sendData.length,
             "tag": tag,
             "language": "zh",
-            "version": "1"
+            "version": "1",
+            "guid":req.headers["guid"]||""
         }
     };
 

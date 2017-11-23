@@ -264,6 +264,18 @@ app.post('/serverDianDian', function (req, res) {
 
     var key = CryptoJS.enc.Utf8.parse(CONFIG.key);
     var iv = CryptoJS.enc.Utf8.parse(CONFIG.iv);
+
+
+    if(cmd=="richardSignTemp"){
+        var sign = Encrypt(JSON.parse(param).Id, key, iv);
+        res.send(200, {
+            State: 0,
+            Msg: "richardSignTemp success!",
+            Value: sign
+        });
+        return;
+    }
+
     var host = "d.aibyn.com";
     var tag = 10006;
     var path = "/User.ashx";
@@ -392,7 +404,7 @@ app.post('/server', function (req, res) {
 
 var PORT = process.env.PORT || 3000;
 
-var server = app.listen(PORT, '192.168.1.56', function () {
+var server = app.listen(PORT, '127.0.0.1', function () {
     console.log(new Date().toString() + "h5 server start ok!  port " + PORT);
 });
 

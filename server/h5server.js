@@ -267,7 +267,7 @@ app.post('/serverDianDian', function (req, res) {
 
 
     if(cmd=="richardSignTemp"){
-        var sign = Encrypt(JSON.parse(param).Id, key, iv);
+        var sign = Encrypt(JSON.parse(param).ShopId, key, iv);
         res.send(200, {
             State: 0,
             Msg: "richardSignTemp success!",
